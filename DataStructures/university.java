@@ -33,24 +33,30 @@ public class university {
 
     public static void main(String[] args) {
         List<Univ> seats = new ArrayList<>();
-         seats.add(new Univ("National Institute of Technology", 4));
-         seats.add(new Univ("Science and Technology Academy", 3));
-         seats.add(new Univ("State University", 5));
-         seats.add(new Univ("Commerce College", 6));
-         seats.add(new Univ("Arts and Design University", 2));
+        seats.add(new Univ("National Institute of Technology", 4));
+        seats.add(new Univ("Science and Technology Academy", 3));
+        seats.add(new Univ("State University", 5));
+        seats.add(new Univ("Commerce College", 1));
+        seats.add(new Univ("Arts and Design University", 0));
+
+        Map<String, Univ> seatMap = new HashMap<>();
+        for (Univ u : seats) {
+            seatMap.put(u.name, u);
+        }
 
         List<Student> applicants = new ArrayList<>();
         applicants.add(new Student("Aisha Khan", 101, Arrays.asList("National Institute of Technology", "Science and Technology Academy", "State University", "Commerce College", "Arts and Design University"), 95));
-        applicants.add(new Student("Rajan Patel", 102, Arrays.asList("State University", "National Institute of Technology", "Arts and Design University", "Commerce College", "Science and Technology Academy"), 92));
+        applicants.add(new Student("Rajan Patel", 102, Arrays.asList("Commerce College", "National Institute of Technology", "Arts and Design University", "Commerce College", "Science and Technology Academy"), 92));
         applicants.add(new Student("Mia Chen", 103, Arrays.asList("Science and Technology Academy", "National Institute of Technology", "State University", "Arts and Design University", "Commerce College"), 95));
         applicants.add(new Student("Noah Smith", 104, Arrays.asList("Commerce College", "Arts and Design University", "State University", "Science and Technology Academy", "National Institute of Technology"), 88));
         applicants.add(new Student("Sofia Lopez", 105, Arrays.asList("Arts and Design University", "Science and Technology Academy", "State University", "Commerce College", "National Institute of Technology"), 90));
         applicants.add(new Student("Ethan Gray", 106, Arrays.asList("National Institute of Technology", "State University", "Science and Technology Academy", "Arts and Design University", "Commerce College"), 92));
         applicants.add(new Student("Priya Sharma", 107, Arrays.asList("State University", "Commerce College", "Arts and Design University", "Science and Technology Academy", "National Institute of Technology"), 85));
         applicants.add(new Student("Liam Johnson", 108, Arrays.asList("Science and Technology Academy", "National Institute of Technology", "Commerce College", "State University", "Arts and Design University"), 88));
+
         System.out.println("ENTER CANDIDATE DETAILS");
         System.out.println("-1 to stop entering candidates)\n");
-        Scanner scanner=new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("Enter Student Name: ");
             String name = scanner.nextLine();
@@ -79,10 +85,10 @@ public class university {
                 }
             }
 
-            // Create and add student to list
             applicants.add(new Student(name, id, userPreferences, marks));
             System.out.println("-> Student Added Successfully!\n");
         }
+
         applicants.sort((a, b) -> {
             if (b.marks == a.marks) {
                 return Integer.compare(b.tieBreaker, a.tieBreaker);
@@ -92,16 +98,10 @@ public class university {
 
         for (Student student : applicants) {
             for (String choice : student.preferences) {
-                boolean seatfound = false;
-                for (Univ u : seats){
-                    if(u.name.equals(choice)&& u.seats>0){
-                        student.assignedUniversity=u.name;
-                        u.seats--;
-                        seatfound=true;
-                        break;
-                    }
-                }
-                if(seatfound){
+                Univ u = seatMap.get(choice);
+                if (u != null && u.seats > 0) {
+                    student.assignedUniversity = u.name;
+                    u.seats--;
                     break;
                 }
             }
