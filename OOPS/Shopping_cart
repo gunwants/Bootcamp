@@ -1,0 +1,107 @@
+import java.util.*;
+public class ps3 {
+
+    static class Customer {
+        private final String name;
+        private int budget;
+
+        Customer(String name, int budget) {
+            this.name = name.trim().toLowerCase();
+            this.budget = budget;
+        }
+
+        String getName() {
+            return name;
+        }
+
+        int getBudget() {
+            return budget;
+        }
+
+        private void charge(int amount) {
+            budget = budget - amount;
+        }
+
+        private void refund(int amount) {
+            budget = budget + amount;
+        }
+    }
+
+    static class Cart {
+        private final int cartNumber;
+        private final Customer owner;
+        private int total = 0;
+
+        Cart(int cartNumber, Customer owner) {
+            this.cartNumber = cartNumber;
+            this.owner = owner;
+        }
+
+        boolean addItem(int cost) {
+            if (cost < 0) {
+                throw new IllegalArgumentException("Cost must not be negative");
+            }
+            if (owner.getBudget() < cost) {
+                System.out.printf("Declined: cost %s exceeds budget %s%n", money(cost), money(owner.getBudget()));
+                return false;
+            }
+            total = total + cost;
+            owner.charge(cost);
+            System.out.println("Added item costing " + money(cost));
+            return true;
+        }
+
+        boolean removeItem(int cost) {
+            if (cost < 0) {
+                throw new IllegalArgumentException("Cost must not be negative");
+            }
+            if (cost > total) {
+                System.out.println("Declined: cannot remove more than the current cart total");
+                return false;
+            }
+            total = total - cost;
+            owner.refund(cost);
+            System.out.println("Removed item costing " + money(cost));
+            return true;
+        }
+
+        void display() {
+            System.out.println("Owner: " + owner.getName());
+            System.out.println("Cart ID: " + cartNumber);
+            System.out.println("Cart Total: " + money(total));
+            System.out.println("Remaining Budget: " + money(owner.getBudget()));
+        }
+
+        private static String money(int amount) {
+            return "" + amount;
+        }
+    }
+
+    public static void main(String[] args) {
+        try (Scanner sc = new Scanner(System.in)) {
+            System.out.println("Please enter the owner name:");
+            String name = sc.next();
+
+            System.out.println("Please enter the Cart Number:");
+            int cartNum = sc.nextInt();
+
+            System.out.println("Please enter the account type (Premium/Regular):");
+            String type = sc.next().toLowerCase();
+
+            int budget = type.equalsIgnoreCase("premium") ? 5000 : 1000;
+            Customer cust = new Customer(name, budget);
+            Cart cart = new Cart(cartNum, cust);
+
+            cart.display();
+
+            cart.addItem(45);
+            cart.addItem(120);
+            cart.display();
+
+            cart.removeItem(15);
+            cart.display();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
