@@ -1,0 +1,225 @@
+import java.util.*;
+
+public class ps2 {
+    static HashMap<Integer, Integer> bks = new HashMap<>();
+    static HashMap<String, Member> members = new HashMap<>();
+    static HashMap<Integer, Book> booksRegistry = new HashMap<>();
+
+    static Scanner sc = new Scanner(System.in);
+
+    static class Member {
+        public String name;
+        public String acNumber;
+        public String type;
+        private int balance;
+        public HashMap<Integer, Integer> borrowedBooks = new HashMap<>();
+
+        public Member() {
+            System.out.print("Enter Member Name: ");
+            this.name = sc.nextLine().toLowerCase();
+
+            System.out.print("Enter Account Number: ");
+            this.acNumber = sc.nextLine().trim();
+
+            System.out.print("Enter Member Type (teacher/student): ");
+            this.type = sc.nextLine().toLowerCase();
+
+            if (type.equals("student")) {
+                setBalance(5);
+            } else if (type.equals("teacher")) {
+                setBalance(3);
+            } else {
+                throw new IllegalArgumentException("Unsupported type! Must be 'teacher' or 'student'.");
+            }
+
+            System.out.println("Member registered successfully with borrow limit: " + this.balance);
+        }
+
+        public void setBalance(int bal) {
+            this.balance = bal;
+        }
+
+        public int getBalance() {
+            return this.balance;
+        }
+
+        public void display() {
+            System.out.println("Name        : " + this.name);
+            System.out.println("Account No  : " + this.acNumber);
+            System.out.println("Type        : " + this.type);
+            System.out.println("Borrow Limit: " + getBalance());
+            System.out.println("Borrowed Books: " + borrowedBooks);
+        }
+    }
+
+    static class Book {
+        private static int idCnt = 1;
+        public String bookName;
+        public int bookId;
+
+        public Book() {
+            System.out.print("Enter Book Title: ");
+            this.bookName = sc.nextLine();
+            this.bookId = idCnt++;
+
+            System.out.print("Enter Quantity: ");
+            int q = Integer.parseInt(sc.nextLine());
+
+            bks.put(this.bookId, q);
+            System.out.println("Book created with ID " + this.bookId + " (Qty: " + q + ")");
+        }
+    }
+
+    private static void registerMember() {
+        try {
+            Member m = new Member();
+            if (members.containsKey(m.acNumber)) {
+                System.out.println("Error: Account number already exists!");
+            } else {
+                members.put(m.acNumber, m);
+            }
+        } catch (Exception e) {
+            System.out.println("Error creating member: ");
+        }
+    }
+
+    private static void addBook() {
+        try {
+            Book b = new Book();
+            booksRegistry.put(b.bookId, b);
+        } catch (Exception e) {
+            System.out.println("Invalid input format for book details.");
+        }
+    }
+
+    private static void borrowBook() {
+        System.out.print("Enter Account Number: ");
+        String accNo = sc.nextLine().trim();
+
+        if (!members.containsKey(accNo)) {
+            System.out.println("Error: Member not found.");
+            return;
+        }
+
+        Member m = members.get(accNo);
+        if (m.getBalance() <= 0) {
+            System.out.println("Error: Member has reached their borrowing limit.");
+            return;
+        }
+
+        System.out.print("Enter Book ID to borrow: ");
+        int bookId;
+        bookId = Integer.parseInt(sc.nextLine().trim());
+
+        if (!bks.containsKey(bookId)) {
+            System.out.println("Error: Book ID does not exist.");
+            return;
+        }
+
+        int availableQty = bks.get(bookId);
+        if (availableQty <= 0) {
+            System.out.println("Error: Book is currently out of stock.");
+            return;
+        }
+
+        bks.put(bookId, availableQty - 1);
+        m.setBalance(m.getBalance() - 1);
+        m.borrowedBooks.put(bookId, m.borrowedBooks.get(bookId) + 1);
+        System.out.println("Success! Book '" + booksRegistry.get(bookId).bookName + "' borrowed.");
+    }
+
+    private static void returnBook() {
+        System.out.print("Enter Account Number: ");
+        String accNo = sc.nextLine().trim();
+
+        if (!members.containsKey(accNo)) {
+            System.out.println("Error: Member not found.");
+            return;
+        }
+
+        Member m = members.get(accNo);
+
+        System.out.print("Enter Book ID to return: ");
+        int bookId;
+        bookId =sc.nextInt();
+         if (!m.borrowedBooks.containsKey(bookId) || m.borrowedBooks.get(bookId) <= 0) {
+            System.out.println("Error: This member hasn't borrowed this book.");
+            return;
+         }
+        bks.put(bookId, bks.get(bookId) + 1);
+        m.setBalance(m.getBalance() + 1);
+        int count = m.borrowedBooks.get(bookId);
+        if (count == 1) {
+            m.borrowedBooks.remove(bookId);
+        } else {
+            m.borrowedBooks.put(bookId, count - 1);
+        }
+
+        System.out.println("Success! Book returned.");
+    }
+
+    private static void displayInventory() {
+        if (booksRegistry.isEmpty()) {
+            System.out.println("No books in library");
+            return;
+        }
+
+        for (int id : booksRegistry.keySet()) {
+            Book b = booksRegistry.get(id);
+            int qty = bks.get(id);
+            System.out.println("ID: " + b.bookId + " | Title: " + b.bookName + " | Available Qty: " + qty);
+        }
+    }
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("1. Register New Member");
+            System.out.println("2. Add New Book");
+            System.out.println("3. Borrow Book");
+            System.out.println("4. Return Book");
+            System.out.println("5. View Book Inventory");
+            System.out.println("6. View Member Info");
+            System.out.println("7. Exit");
+            System.out.print("Choose an option: ");
+            int choice;
+            try {
+                choice = Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid numeric choice.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    registerMember();
+                    break;
+                case 2:
+                    addBook();
+                    break;
+                case 3:
+                    borrowBook();
+                    break;
+                case 4:
+                    returnBook();
+                    break;
+                case 5:
+                    displayInventory();
+                    break;
+                case 6:
+                    System.out.print("Enter Account Number: ");
+                    String acc = sc.nextLine().trim();
+                    if (members.containsKey(acc)) {
+                        members.get(acc).display();
+                    } else {
+                        System.out.println("Member not found.");
+                    }
+                    break;
+                case 7:
+                    System.out.println("Exiting system. Goodbye!");
+                    return;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        }
+    }
+}
