@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #e4e9ef;
+  display: grid;
+  grid-template-areas: "SidePanel Navbar Navbar"
+                       "SidePanel SearchBar SearchBar"
+                       "SidePanel project-wrapper Announcements"
+                       "SidePanel project-wrapper trending";
+}
+.SidePanel {
+  width: 220px;
+  background: #1f8fe0;
+  color: white;
+  padding: 20px;
+  grid-area: SidePanel;
+}
+
+.SidePanel .PanelButton {
+  padding: 10px;
+  margin-top: 8px;
+}
+
+.SearchBar,
+.Navbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+}
+
+.SearchBar { grid-area: SearchBar; }
+.Navbar { grid-area: Navbar; }
+
+.button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #1f8fe0;
+  color: white;
+}
+.project-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  grid-area: project-wrapper;
+}
+
+.project {
+  background: white;
+  border-left: 5px solid #f4b400;
+  padding: 16px;
+  width: 45%;
+}
+
+.Announcements,
+.trending {
+  background: white;
+  padding: 16px;
+  margin: 16px;
+}
+
+.Announcements { grid-area: Announcements; }
+.trending { grid-area: trending; }
