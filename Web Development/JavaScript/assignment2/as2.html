@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+      margin: 0;
+      padding: 30px;
+      color: #222;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #player-form {
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #player-form input {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 180px;
+    }
+
+    #player-form button {
+      padding: 10px 18px;
+      border: none;
+      background: #4f46e5;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    #player-form button:hover {
+      background: #4338ca;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 8px;
+      justify-content: center;
+      margin: 25px auto;
+      background: #dbeafe;
+      padding: 10px;
+      border-radius: 12px;
+      width: max-content;
+    }
+
+    .cell {
+      background: white;
+      border: 2px solid #94a3b8;
+      border-radius: 10px;
+      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .cell:hover {
+      background: #f1f5f9;
+      border-color: #475569;
+    }
+
+    #result {
+      font-size: 1.2rem;
+      font-weight: bold;
+      min-height: 30px;
+      margin-top: 10px;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tic Tac Toe</h1>
+
+  <form id="player-form">
+    <input type="text" id="player1-name" placeholder="Player 1 (X)">
+    <input type="text" id="player2-name" placeholder="Player 2 (O)">
+    <button type="submit">Start / Restart</button>
+  </form>
+
+  <div id="board"></div>
+
+  <div id="result"></div>
+
+  <script src="as2.js"></script>
+</body>
+</html>
